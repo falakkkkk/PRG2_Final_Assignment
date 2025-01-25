@@ -32,6 +32,8 @@ namespace PRG2_Final_Assignment
             no
                 Can you see the changes now?
 
+                yes i can see now
+
         }
 
     }
