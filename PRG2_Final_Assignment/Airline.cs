@@ -35,7 +35,7 @@ namespace PRG2_Final_Assignment
         }
 
       public double CalculateFees()
-        {
+      {
             double totalFee = 0;
             foreach(var flight in Flights.Values)
             {
@@ -45,7 +45,7 @@ namespace PRG2_Final_Assignment
             foreach(var flight in Flights.Values)
 
             return totalFee;
-        }
+      }
 
         public bool RemoveFlight(Flight flight)
         {

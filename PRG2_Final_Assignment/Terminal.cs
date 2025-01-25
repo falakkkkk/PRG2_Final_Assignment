@@ -34,5 +34,32 @@ namespace PRG2_Final_Assignment
             }
         }
         public bool AddBoardingGate(BoardingGate boardingGate)
+        {
+            if (BoardingGates.ContainsKey(boardingGate.GateName))
+            {
+                return false;
+            }
+            else
+            {
+                BoardingGates.Add(boardingGate.GateName, boardingGate);
+                return true;
+            }
+        }
+        public Airline GetAirline(Airline airline)
+        {
+            foreach(var airline  in Airlines.Values)
+            {
+                return airline;
+            }
+            return null;
+        }
+        public void PrintAirLineFees(Airline airline)
+        {
+            Console.WriteLine("Airline Fees for Terminal" + TerminalName);
+            foreach (var a in Airlines.Values)
+            {
+                Console.WriteLine($"{a.Name} ({a.Code})    Fees: ${a.CalculateFees()}");
+            }
+        }
     }
 }
