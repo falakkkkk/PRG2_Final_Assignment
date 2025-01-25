@@ -34,20 +34,19 @@ namespace PRG2_Final_Assignment
 
         }
 
-        public double CalculateFees()
+      public double CalculateFees()
         {
-            double fees = 0;
-            double total_fee = 0;
-
-            foreach (var flight in Flights.Values)
+            double totalFee = 0;
+            foreach(var flight in Flights.Values)
             {
-                fees = flight.CalculateFees(flight.Origin, flight.Destination);
-                total_fee += fees;
-
+                totalFee += flight.CalculateFees(flight.Origin, flight.Destination);
             }
-            return total_fee;
+            double discount = 0;
+            foreach(var flight in Flights.Values)
 
+            return totalFee;
         }
+
         public bool RemoveFlight(Flight flight)
         {
             if (Flights.ContainsKey(flight.FlightNumber))

@@ -19,6 +19,7 @@ namespace PRG2_Final_Assignment
         public override double CalculateFees(string origin, string destination)
         {
             double fees = 0;
+            double boarding_baseFee = 300;
 
             if (destination == "Singapore (SIN)")
             {
@@ -29,7 +30,7 @@ namespace PRG2_Final_Assignment
                 fees = 800 + 500;
             }
 
-            return fees + 300;
+            return fees + boarding_baseFee;
         }
 
 
