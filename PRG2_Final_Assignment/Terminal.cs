@@ -45,7 +45,7 @@ namespace PRG2_Final_Assignment
                 return true;
             }
         }
-        public Airline GetAirline(Airline airline)
+        public Airline GetAirlineFromFlight(Airline airline)
         {
             foreach(var Airline  in Airlines.Values)
             {
@@ -56,10 +56,15 @@ namespace PRG2_Final_Assignment
         public void PrintAirLineFees(Airline airline)
         {
             Console.WriteLine("Airline Fees for Terminal" + TerminalName);
-            foreach (var a in Airlines.Values)
+            foreach (var Airline in Airlines.Values)
             {
-                Console.WriteLine($"{a.Name} ({a.Code})    Fees: ${a.CalculateFees()}");
+                Console.WriteLine($"{Airline.Name} ({Airline.Code})    Fees: ${Airline.CalculateFees()}");
             }
+        }
+
+        public override string ToString()
+        {
+            return $"Terminal: {TerminalName} \t Airlines: {Airlines.Count} \t Boarding Gates: {BoardingGates.Count} \t Flights: {Flights.Count}";
         }
     }
 }
