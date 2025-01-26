@@ -1,5 +1,12 @@
-﻿using PRG2_Final_Assignment;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿//==========================================================
+// Student Number	: S10268096J
+// Partner Number   : S10267014H
+// Student Name	: Houshika Barathimogan
+// Partner Name	: Sharma Falak 
+//==========================================================
+
+
+using PRG2_Final_Assignment;
 
 //Basic Feature (1) Load Airlines file and add to dictionary
 
@@ -14,11 +21,11 @@ for (int i = 1; i < csvLines.Length; i++)
     Terminal5.AddAirline(new Airline(aName, aCode));
     
 }
-Console.WriteLine($"{"Airline Name",-15} {"Airline Code",-12}");
+Console.WriteLine($"{"Airline Name",-20} {"Airline Code",-12}");
 foreach (var airline in Terminal5.Airlines)
 {
 
-    Console.WriteLine($"{airline.Key,-15} {airline.Value.Name,-12}");
+    Console.WriteLine($"{airline.Value.Name,-20} {airline.Key,-12}");
 }
 Console.WriteLine();
 

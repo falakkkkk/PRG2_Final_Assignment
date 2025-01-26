@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+//==========================================================
+// Student Number	: S10268096J
+// Partner Number   : S10267014H
+// Student Name	: Houshika Barathimogan
+// Partner Name	: Sharma Falak 
+//==========================================================
+
 
 namespace PRG2_Final_Assignment
 {
@@ -45,20 +52,29 @@ namespace PRG2_Final_Assignment
                 return true;
             }
         }
-        public Airline GetAirlineFromFlight(Airline airline)
+        public Airline GetAirlineFromFlight(Flight flight)
         {
-            foreach(var Airline  in Airlines.Values)
+            foreach (var airline in Airlines.Values)
             {
-                return airline;
+                if (airline.Flights.ContainsKey(flight.FlightNumber))
+                {
+                    return airline;
+                }
             }
             return null;
         }
+
         public void PrintAirLineFees(Airline airline)
         {
             Console.WriteLine("Airline Fees for Terminal" + TerminalName);
-            foreach (var Airline in Airlines.Values)
+            if (Airlines.ContainsKey(airline.Code))
             {
-                Console.WriteLine($"{Airline.Name} ({Airline.Code})    Fees: ${Airline.CalculateFees()}");
+                // Print that airline’s name, code, and total fees
+                Console.WriteLine($"{airline.Name} ({airline.Code}) => Fees: ${airline.CalculateFees()}");
+            }
+            else
+            {
+                Console.WriteLine($"Airline {airline.Name} not found in {TerminalName}.");
             }
         }
 
