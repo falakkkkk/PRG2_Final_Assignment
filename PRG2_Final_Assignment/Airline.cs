@@ -35,17 +35,49 @@ namespace PRG2_Final_Assignment
         }
 
       public double CalculateFees()
-      {
+        {
             double totalFee = 0;
-            foreach(var flight in Flights.Values)
+            double discount = 0;
+            int flightCount = Flights.Count;
+
+            foreach (var flight in Flights.Values)
             {
                 totalFee += flight.CalculateFees(flight.Origin, flight.Destination);
-            }
-            double discount = 0;
-            foreach(var flight in Flights.Values)
 
+                if (flight.ExpectedTime.Hour < 11 || flight.ExpectedTime.Hour > 21)
+                {
+                    discount += 110;
+                }
+
+                if (flight.Origin == "Dubai (DXB)" || flight.Origin == "Bangkok (BKK)" || flight.Origin == "Tokyo (NRT)")
+                {
+                    discount += 25;
+                }
+
+                if (flight is NORMFlight )
+                {
+                    discount += 50;
+                }
+                    
+            }
+
+            
+            if (flightCount >= 3 )
+            {
+                discount += (flightCount / 3) * 350;  
+
+            }
+
+            if (flightCount > 5)
+            {
+                discount += totalFee * 0.03;
+            }
+
+
+            totalFee -= discount;
             return totalFee;
       }
+
 
         public bool RemoveFlight(Flight flight)
         {
