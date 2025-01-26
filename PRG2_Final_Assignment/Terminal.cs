@@ -47,7 +47,7 @@ namespace PRG2_Final_Assignment
         }
         public Airline GetAirline(Airline airline)
         {
-            foreach(var airline  in Airlines.Values)
+            foreach(var Airline  in Airlines.Values)
             {
                 return airline;
             }
