@@ -9,18 +9,18 @@ namespace PRG2_Final_Assignment
     public class BoardingGate
     {
         public string GateName { get; set; }
-        public bool SupportsCFFT { get; set; }
         public bool SupportsDDJB { get; set; }
+        public bool SupportsCFFT { get; set; }
         public bool SupportsLWTT { get; set; }
         public Flight Flight { get; set; }
 
         public BoardingGate() { }
 
-        public BoardingGate (string gateName, bool supportsCFFT, bool supportsDDJB, bool supportsLWTT)
+        public BoardingGate (string gateName, bool supportsDDJB, bool supportsCFFT, bool supportsLWTT)
         {
             GateName = gateName;
-            SupportsCFFT = supportsCFFT;
             SupportsDDJB = supportsDDJB;
+            SupportsCFFT = supportsCFFT;
             SupportsLWTT = supportsLWTT;
             Flight = null; 
         }
@@ -38,9 +38,9 @@ namespace PRG2_Final_Assignment
         {
             if (Flight != null)
             {
-                return $"Gate Name: {GateName}, Supports CFFT: {SupportsCFFT}, Supports DDJB: {SupportsDDJB}, Supports LWTT: {SupportsLWTT}, Flight: {Flight.ToString()}";
+                return $"Gate Name: {GateName}, Supports DDJB: {SupportsDDJB}, Supports CFFT: {SupportsCFFT}, Supports LWTT: {SupportsLWTT}, Flight: {Flight.ToString()}";
             }
-            return $"Gate Name: {GateName}, Supports CFFT: {SupportsCFFT}, Supports DDJB: {SupportsDDJB}, Supports LWTT: {SupportsLWTT}, Flight: No flight assigned";
+            return $"Gate Name: {GateName}, Supports DDJB: {SupportsDDJB}, Supports CFFT: {SupportsCFFT}, Supports LWTT: {SupportsLWTT}, Flight: No flight assigned";
         }
 
 
