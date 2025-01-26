@@ -12,29 +12,37 @@ namespace PRG2_Final_Assignment
         public bool SupportsCFFT { get; set; }
         public bool SupportsDDJB { get; set; }
         public bool SupportsLWTT { get; set; }
-        public Flight F { get; set; }
+        public Flight Flight { get; set; }
 
         public BoardingGate() { }
 
-        public BoardingGate (string gateName, bool supportsCFFT, bool supportsDDJB, bool supportsLWTT, Flight flight)
+        public BoardingGate (string gateName, bool supportsCFFT, bool supportsDDJB, bool supportsLWTT)
         {
             GateName = gateName;
             SupportsCFFT = supportsCFFT;
             SupportsDDJB = supportsDDJB;
             SupportsLWTT = supportsLWTT;
-            F = flight;
+            Flight = null; 
         }
 
         public double CalculateFees()
         {
-            double baseFee = 300;
-            double totalFee = 0;
-            no
-                Can you see the changes now?
-
-                yes i can see now
+            if (Flight == null)
+            {
+                return 0;
+            }
+            return Flight.CalculateFees(Flight.Origin,Flight.Destination);
 
         }
+        public override string ToString()
+        {
+            if (Flight != null)
+            {
+                return $"Gate Name: {GateName}, Supports CFFT: {SupportsCFFT}, Supports DDJB: {SupportsDDJB}, Supports LWTT: {SupportsLWTT}, Flight: {Flight.ToString()}";
+            }
+            return $"Gate Name: {GateName}, Supports CFFT: {SupportsCFFT}, Supports DDJB: {SupportsDDJB}, Supports LWTT: {SupportsLWTT}, Flight: No flight assigned";
+        }
+
 
     }
 }
