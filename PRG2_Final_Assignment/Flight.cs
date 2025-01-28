@@ -51,8 +51,9 @@ namespace PRG2_Final_Assignment
 
         public override string ToString()
         {
-            return "Flight Number: " + FlightNumber + "\tOrigin: " + Origin + "\tDestination: " + Destination + "\tExpected Time: " + ExpectedTime + "\tStatus " + Status;
+            return "Flight Number: " + FlightNumber + "\tOrigin: " + Origin + "\tDestination: " + Destination + "\tExpected Time: " + ExpectedTime.ToString("h:mm tt") + "\tStatus: " + Status;
         } 
 
     }
 }
+
