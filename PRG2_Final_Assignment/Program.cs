@@ -115,4 +115,35 @@ foreach (var flight in airline.Flights.Values)
 {
     Console.WriteLine(flight.ToString());
 }
-  
+ 
+
+// Display Menu
+
+void DisplayMenu()
+{
+    Console.WriteLine("=============================================\r\nWelcome to Changi Airport Terminal 5\r\n=============================================\r\n1. List All Flights\r\n2. List Boarding Gates\r\n3. Assign a Boarding Gate to a Flight\r\n4. Create Flight\r\n5. Display Airline Flights\r\n6. Modify Flight Details\r\n7. Display Flight Schedule\r\n0. Exit");
+}
+
+while (true)
+{
+    DisplayMenu();
+    Console.Write("Please select your option: ");
+    string option = Console.ReadLine();
+    
+    if (option == "2")
+    {
+        Console.WriteLine("=============================================\r\nList of Boarding Gates for Changi Airport Terminal 5\r\n=============================================");
+        DisplayBoardingGates();
+    }
+}
+
+// List all boarding gates method - Basic Feature (4)
+void DisplayBoardingGates()
+{
+    Console.WriteLine($"{"Gate Name",-15} {"DDJB",-12} {"CFFT",-12} {"LWTT",-12}");
+
+    foreach (var boardingGate in Terminal5.BoardingGates)
+    {
+        Console.WriteLine($"{boardingGate.Value.GateName,-15} {boardingGate.Value.SupportsDDJB,-12} {boardingGate.Value.SupportsCFFT,-12} {boardingGate.Value.SupportsLWTT,-12}");
+    }
+}
