@@ -50,6 +50,10 @@ foreach (var boardingGate in Terminal5.BoardingGates)
     Console.WriteLine($"{boardingGate.Value.GateName,-15} {boardingGate.Value.SupportsDDJB,-12} {boardingGate.Value.SupportsCFFT,-12} {boardingGate.Value.SupportsLWTT,-12}");
 }
 
+
+
+
+
 // Basic Feature (2) Load flights file and add to dictionary
 
 Airline airline = new Airline("Singapore Airlines", "SQ");
@@ -64,7 +68,7 @@ try
         string origin = data[1];
         string destination = data[2];
         DateTime expectedTime = Convert.ToDateTime(data[3]);
-        //string status = data[4];
+
         string specialRequest = "";
         if (data.Length > 4)
         {
@@ -111,3 +115,4 @@ foreach (var flight in airline.Flights.Values)
 {
     Console.WriteLine(flight.ToString());
 }
+  
