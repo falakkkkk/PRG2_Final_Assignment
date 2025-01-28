@@ -98,7 +98,7 @@ namespace PRG2_Final_Assignment
 
         public override string ToString()
         {
-            return "Name" + Name + "\tCode: " + Code;
+            return "Name: " + Name + "\tCode: " + Code;
         }
 
     }

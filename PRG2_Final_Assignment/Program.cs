@@ -135,6 +135,10 @@ while (true)
         Console.WriteLine("=============================================\r\nList of Boarding Gates for Changi Airport Terminal 5\r\n=============================================");
         DisplayBoardingGates();
     }
+    else if (option == "7")
+    {
+        DisplayAirlineFlightDetails(Terminal5.Airlines);
+    }
 }
 
 // List all boarding gates method - Basic Feature (4)
@@ -146,4 +150,26 @@ void DisplayBoardingGates()
     {
         Console.WriteLine($"{boardingGate.Value.GateName,-15} {boardingGate.Value.SupportsDDJB,-12} {boardingGate.Value.SupportsCFFT,-12} {boardingGate.Value.SupportsLWTT,-12}");
     }
+}
+
+// Display full flight details from an airline - Basic Feature (7)
+void DisplayAirlineFlightDetails(Dictionary<string, Airline> Airlines)
+{
+    Console.WriteLine("=============================================\r\nFlight Schedule for Changi Airport Terminal 5\r\n=============================================");
+
+    Console.WriteLine($"{"Airline Name",-20} {"Airline Code",-12}");
+    foreach (var airlines in Terminal5.Airlines)
+    {
+
+        Console.WriteLine($"{airlines.Value.Name,-20} {airlines.Key,-12}");
+    }
+    Console.Write("Enter the 2-Letter Airline Code: ");
+    string airlineCode = Console.ReadLine();
+    if (Airlines.ContainsKey(airlineCode))
+    {
+        Airline  selectedAirline = Terminal5.Airlines[airlineCode];
+        Console.WriteLine($"\nFlights for {selectedAirline.Name} ({selectedAirline.Code}):"); // use to string method to display once hardcoded airline is fixed.
+    }
+
+
 }
