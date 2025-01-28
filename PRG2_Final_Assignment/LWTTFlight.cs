@@ -18,7 +18,7 @@ namespace PRG2_Final_Assignment
         public double RequestFee { get; set; }
 
         public LWTTFlight() : base() { }
-        public LWTTFlight(string flightNumber, string origin, string destination, DateTime expectedTime, string status, string requestFee) : base(flightNumber, origin, destination, expectedTime, status)
+        public LWTTFlight(string flightNumber, string origin, string destination, DateTime expectedTime, string status) : base(flightNumber, origin, destination, expectedTime, status)
         {
         }
 
