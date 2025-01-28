@@ -18,11 +18,10 @@ namespace PRG2_Final_Assignment
         public double RequestFee { get; set; }
 
         public CFFTFlight() : base() { }
-        public CFFTFlight(string flightNumber, string origin, string destination, DateTime expectedTime, string status) : base(flightNumber, origin, destination, expectedTime, status)
+        public CFFTFlight(string flightNumber, string origin, string destination, DateTime expectedTime, string status, double requestFee) : base(flightNumber, origin, destination, expectedTime, status)
         {
-            
+            RequestFee = requestFee;
         }
-
         public override double CalculateFees(string origin, string destination)
         {
             double fees = 0;
@@ -45,7 +44,7 @@ namespace PRG2_Final_Assignment
 
         public override string ToString()
         {
-            return base.ToString() + "\tRequest Fee: " +150;
+            return base.ToString() + "\tRequest Fee: " + RequestFee;
         }
     }
 }

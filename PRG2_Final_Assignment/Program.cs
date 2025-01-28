@@ -7,6 +7,7 @@
 
 
 using PRG2_Final_Assignment;
+using System.Globalization;
 
 //Basic Feature (1) Load Airlines file and add to dictionary
 
@@ -56,14 +57,15 @@ foreach (var boardingGate in Terminal5.BoardingGates)
 
 // Basic Feature (2) Load flights file and add to dictionary
 
-Airline airline = new Airline("Singapore Airlines", "SQ");
+
+Dictionary<string, Flight> Flights = new Dictionary<string, Flight>();
 
 try
 {
-    string[] lines = File.ReadAllLines("flights.csv");
-    for (int i = 1;i < lines.Length;i++)
+    string[] flightLines = File.ReadAllLines("flights.csv");
+    for (int i = 1; i < flightLines.Length; i++)
     {
-        string[] data = lines[i].Split(',');
+        string[] data = flightLines[i].Split(',');
         string flightNumber = data[0];
         string origin = data[1];
         string destination = data[2];
@@ -79,30 +81,32 @@ try
             specialRequest = null;
         }
 
+        Flight flight;
         if (specialRequest == "DDJB")
         {
-            airline.AddFlight(new DDJBFlight(flightNumber, origin, destination, expectedTime, specialRequest));
+            flight = new DDJBFlight(flightNumber, origin, destination, expectedTime, specialRequest, 300);
         }
         else if (specialRequest == "LWTT")
         {
-            airline.AddFlight(new LWTTFlight(flightNumber, origin, destination, expectedTime, specialRequest));
+            flight = new LWTTFlight(flightNumber, origin, destination, expectedTime, specialRequest, 500);
         }
-        else if(specialRequest == "CFFT")
+        else if (specialRequest == "CFFT")
         {
-            airline.AddFlight(new CFFTFlight(flightNumber, origin, destination, expectedTime, specialRequest));
+            flight = new CFFTFlight(flightNumber, origin, destination, expectedTime, specialRequest, 150);
         }
         else
         {
-            airline.AddFlight(new NORMFlight(flightNumber, origin, destination, expectedTime, specialRequest));
+            flight = new NORMFlight(flightNumber, origin, destination, expectedTime, specialRequest);
         }
-       
+
+        Flights.Add(flightNumber, flight);
     }
 }
-catch(FileNotFoundException ex)
+catch (FileNotFoundException ex)
 {
     Console.WriteLine("The file was not found. Please check.");
 }
-catch(IOException ex)
+catch (IOException ex)
 {
     Console.WriteLine("Error reading the file. Please check.");
 }
@@ -111,8 +115,11 @@ catch (Exception ex)
     Console.WriteLine("There's an unexpected error. Please check.");
 }
 
-foreach (var flight in airline.Flights.Values)
-{
-    Console.WriteLine(flight.ToString());
-}
-  
+
+//Console.WriteLine();
+//Console.WriteLine("{0,-15} {1,-20} {2,-20} {3,-15}", "Flight Number", "Origin", "Destination", "Time");
+//Console.WriteLine(new string('-', 70));
+//foreach (var flight in Flights.Values)
+//{
+//    Console.WriteLine($"{flight.FlightNumber,-15} {flight.Origin,-20} {flight.Destination,-20} {flight.ExpectedTime.ToString("h:mm tt"),-15}");
+//}
