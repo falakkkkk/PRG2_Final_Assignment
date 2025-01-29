@@ -59,8 +59,7 @@ foreach (var boardingGate in Terminal5.BoardingGates)
 
 
 Dictionary<string, Flight> Flights = new Dictionary<string, Flight>();
-//Dictionary<string, Airline> Airlines = Terminal5.Airlines;
-//Dictionary<string, Flight> Flights = Terminal5.Flights;
+
 
 try
 {
@@ -101,19 +100,31 @@ try
             flight = new NORMFlight(flightNumber, origin, destination, expectedTime, specialRequest);
         }
 
-        Flights.Add(flightNumber, flight);
+        string[] flightParts = flightNumber.Split(' ');
 
-        //string airlineCode = flightNumber.Substring(0, 2); // Assuming the first 2 characters are the airline code
-        //if (Airlines.ContainsKey(airlineCode))
-        //{
-        //    Airlines[airlineCode].AddFlight(flight);  // Add the flight to the airline's flights
-        //    Flights.Add(flightNumber, flight); // Store the full flight number in the Flights dictionary
 
-        //}
+        string airlineCode = flightParts[0].Trim();
+
+
+        if (Terminal5.Airlines.ContainsKey(airlineCode))
+        {
+
+            Airline airline = Terminal5.Airlines[airlineCode];
+            if (!airline.Flights.ContainsKey(flightNumber))
+            {
+                airline.AddFlight(flight);
+            }
+            else
+            {
+                Console.WriteLine($"[Warning] Flight number '{flightNumber}' already exists under Airline '{airline.Name}'. Skipping addition.");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"[Warning] Airline code '{airlineCode}' not found for flight '{flightNumber}'. Skipping this flight.");
+        }
     }
-
 }
-
 catch (FileNotFoundException ex)
 {
     Console.WriteLine("The file was not found. Please check.");
@@ -128,87 +139,84 @@ catch (Exception ex)
 }
 
 // Basic Feature (3) Display flight
-void displayFlights(Dictionary<string, Flight> Flights, Dictionary<string, Airline> Airlines)
+void displayFlights(Terminal terminal)
 {
     Console.WriteLine();
     Console.WriteLine($"{"Flight Number",-15} {"Airline Name",-25} {"Origin",-20} {"Destination",-20} {"Expected Time",-15}");
     Console.WriteLine(new string('-', 110));
 
-    foreach (var flight in Flights.Values)
+    foreach (var airline in terminal.Airlines.Values)
     {
-        string flightNumber = flight.FlightNumber;
+       
+        foreach (var flight in airline.Flights.Values)
+        {
+            string flightNumber = flight.FlightNumber;
+            string airlineName = airline.Name;
+            string origin = flight.Origin;
+            string destination = flight.Destination;
+            string time = flight.ExpectedTime.ToString("h:mm tt");
 
-        string airlineCode = "";
-
-        string[] sperateflight = flightNumber.Split(' ');
-
-        airlineCode = sperateflight[0].Trim();
-
-        string airlineName = "";
-
-        airlineName = Airlines[airlineCode].Name;
-
-        DateTime time = flight.ExpectedTime;
-
-        Console.WriteLine($"{flightNumber,-15} {airlineName,-25} {flight.Origin,-20} {flight.Destination,-20} {time,-15}");
+            Console.WriteLine($"{flightNumber,-15} {airlineName,-25} {flight.Origin,-20} {flight.Destination,-20} {time,-15}");
+        }
     }
 }
 
+displayFlights(Terminal5); 
 
 
-//Display Menu
+// Display Menu
 
-void DisplayMenu()
-{
-    Console.WriteLine("=============================================\r\nWelcome to Changi Airport Terminal 5\r\n=============================================\r\n1. List All Flights\r\n2. List Boarding Gates\r\n3. Assign a Boarding Gate to a Flight\r\n4. Create Flight\r\n5. Display Airline Flights\r\n6. Modify Flight Details\r\n7. Display Flight Schedule\r\n0. Exit");
-}
+//void DisplayMenu()
+//{
+//    Console.WriteLine("=============================================\r\nWelcome to Changi Airport Terminal 5\r\n=============================================\r\n1. List All Flights\r\n2. List Boarding Gates\r\n3. Assign a Boarding Gate to a Flight\r\n4. Create Flight\r\n5. Display Airline Flights\r\n6. Modify Flight Details\r\n7. Display Flight Schedule\r\n0. Exit");
+//}
 
-while (true)
-{
-    DisplayMenu();
-    Console.Write("Please select your option: ");
-    string option = Console.ReadLine();
+//while (true)
+//{
+//    DisplayMenu();
+//    Console.Write("Please select your option: ");
+//    string option = Console.ReadLine();
 
-    if (option == "2")
-    {
-        Console.WriteLine("=============================================\r\nList of Boarding Gates for Changi Airport Terminal 5\r\n=============================================");
-        DisplayBoardingGates();
-    }
-    else if (option == "7")
-    {
-        DisplayAirlineFlightDetails(Terminal5.Airlines);
-    }
-}
+//    if (option == "2")
+//    {
+//        Console.WriteLine("=============================================\r\nList of Boarding Gates for Changi Airport Terminal 5\r\n=============================================");
+//        DisplayBoardingGates();
+//    }
+//    else if (option == "7")
+//    {
+//        DisplayAirlineFlightDetails(Terminal5.Airlines);
+//    }
+//}
 
-// List all boarding gates method - Basic Feature (4)
-void DisplayBoardingGates()
-{
-    Console.WriteLine($"{"Gate Name",-15} {"DDJB",-12} {"CFFT",-12} {"LWTT",-12}");
+//// List all boarding gates method - Basic Feature (4)
+//void DisplayBoardingGates()
+//{
+//    Console.WriteLine($"{"Gate Name",-15} {"DDJB",-12} {"CFFT",-12} {"LWTT",-12}");
 
-    foreach (var boardingGate in Terminal5.BoardingGates)
-    {
-        Console.WriteLine($"{boardingGate.Value.GateName,-15} {boardingGate.Value.SupportsDDJB,-12} {boardingGate.Value.SupportsCFFT,-12} {boardingGate.Value.SupportsLWTT,-12}");
-    }
-}
+//    foreach (var boardingGate in Terminal5.BoardingGates)
+//    {
+//        Console.WriteLine($"{boardingGate.Value.GateName,-15} {boardingGate.Value.SupportsDDJB,-12} {boardingGate.Value.SupportsCFFT,-12} {boardingGate.Value.SupportsLWTT,-12}");
+//    }
+//}
 
-// Display full flight details from an airline - Basic Feature (7)
-void DisplayAirlineFlightDetails(Dictionary<string, Airline> Airlines)
-{
-    Console.WriteLine("=============================================\r\nFlight Schedule for Changi Airport Terminal 5\r\n=============================================");
+//// Display full flight details from an airline - Basic Feature (7)
+//void DisplayAirlineFlightDetails(Dictionary<string, Airline> Airlines)
+//{
+//    Console.WriteLine("=============================================\r\nFlight Schedule for Changi Airport Terminal 5\r\n=============================================");
 
-    Console.WriteLine($"{"Airline Name",-20} {"Airline Code",-12}");
-    foreach (var airlines in Terminal5.Airlines)
-    {
+//    Console.WriteLine($"{"Airline Name",-20} {"Airline Code",-12}");
+//    foreach (var airlines in Terminal5.Airlines)
+//    {
 
-        Console.WriteLine($"{airlines.Value.Name,-20} {airlines.Key,-12}");
-    }
-    Console.Write("Enter the 2-Letter Airline Code: ");
-    string airlineCode = Console.ReadLine();
-    if (Airlines.ContainsKey(airlineCode))
-    {
-        Airline selectedAirline = Terminal5.Airlines[airlineCode];
-        Console.WriteLine($"\nFlights for {selectedAirline.Name} ({selectedAirline.Code}):"); // use to string method to display once hardcoded airline is fixed.
-    }
+//        Console.WriteLine($"{airlines.Value.Name,-20} {airlines.Key,-12}");
+//    }
+//    Console.Write("Enter the 2-Letter Airline Code: ");
+//    string airlineCode = Console.ReadLine();
+//    if (Airlines.ContainsKey(airlineCode))
+//    {
+//        Airline  selectedAirline = Terminal5.Airlines[airlineCode];
+//        Console.WriteLine($"\nFlights for {selectedAirline.Name} ({selectedAirline.Code}):"); // use to string method to display once hardcoded airline is fixed.
+//    }
 
 
-}
+//}
