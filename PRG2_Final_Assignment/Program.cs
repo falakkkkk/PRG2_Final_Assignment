@@ -59,6 +59,8 @@ foreach (var boardingGate in Terminal5.BoardingGates)
 
 
 Dictionary<string, Flight> Flights = new Dictionary<string, Flight>();
+//Dictionary<string, Airline> Airlines = Terminal5.Airlines;
+//Dictionary<string, Flight> Flights = Terminal5.Flights;
 
 try
 {
@@ -100,8 +102,18 @@ try
         }
 
         Flights.Add(flightNumber, flight);
+
+        //string airlineCode = flightNumber.Substring(0, 2); // Assuming the first 2 characters are the airline code
+        //if (Airlines.ContainsKey(airlineCode))
+        //{
+        //    Airlines[airlineCode].AddFlight(flight);  // Add the flight to the airline's flights
+        //    Flights.Add(flightNumber, flight); // Store the full flight number in the Flights dictionary
+
+        //}
     }
+
 }
+
 catch (FileNotFoundException ex)
 {
     Console.WriteLine("The file was not found. Please check.");
@@ -115,7 +127,36 @@ catch (Exception ex)
     Console.WriteLine("There's an unexpected error. Please check.");
 }
 
-// Display Menu
+// Basic Feature (3) Display flight
+void displayFlights(Dictionary<string, Flight> Flights, Dictionary<string, Airline> Airlines)
+{
+    Console.WriteLine();
+    Console.WriteLine($"{"Flight Number",-15} {"Airline Name",-25} {"Origin",-20} {"Destination",-20} {"Expected Time",-15}");
+    Console.WriteLine(new string('-', 110));
+
+    foreach (var flight in Flights.Values)
+    {
+        string flightNumber = flight.FlightNumber;
+
+        string airlineCode = "";
+
+        string[] sperateflight = flightNumber.Split(' ');
+
+        airlineCode = sperateflight[0].Trim();
+
+        string airlineName = "";
+
+        airlineName = Airlines[airlineCode].Name;
+
+        DateTime time = flight.ExpectedTime;
+
+        Console.WriteLine($"{flightNumber,-15} {airlineName,-25} {flight.Origin,-20} {flight.Destination,-20} {time,-15}");
+    }
+}
+
+
+
+//Display Menu
 
 void DisplayMenu()
 {
@@ -127,7 +168,7 @@ while (true)
     DisplayMenu();
     Console.Write("Please select your option: ");
     string option = Console.ReadLine();
-    
+
     if (option == "2")
     {
         Console.WriteLine("=============================================\r\nList of Boarding Gates for Changi Airport Terminal 5\r\n=============================================");
@@ -165,7 +206,7 @@ void DisplayAirlineFlightDetails(Dictionary<string, Airline> Airlines)
     string airlineCode = Console.ReadLine();
     if (Airlines.ContainsKey(airlineCode))
     {
-        Airline  selectedAirline = Terminal5.Airlines[airlineCode];
+        Airline selectedAirline = Terminal5.Airlines[airlineCode];
         Console.WriteLine($"\nFlights for {selectedAirline.Name} ({selectedAirline.Code}):"); // use to string method to display once hardcoded airline is fixed.
     }
 
