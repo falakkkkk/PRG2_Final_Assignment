@@ -84,22 +84,22 @@ try
 
         if (specialRequest == "DDJB")
         {
-            flight = new DDJBFlight(flightNumber, origin, destination, expectedTime, "On Time", 300);
+            flight = new DDJBFlight(flightNumber, origin, destination, expectedTime, "Unassigned", 300);
 
         }
         else if (specialRequest == "LWTT")
         {
-            flight = new LWTTFlight(flightNumber, origin, destination, expectedTime, "On Time", 500);
+            flight = new LWTTFlight(flightNumber, origin, destination, expectedTime, "Unassigned", 500);
             
         }
         else if (specialRequest == "CFFT")
         {
-            flight = new CFFTFlight(flightNumber, origin, destination, expectedTime, "On Time", 150);
+            flight = new CFFTFlight(flightNumber, origin, destination, expectedTime, "Unassigned", 150);
             
         }
         else
         {
-            flight = new NORMFlight(flightNumber, origin, destination, expectedTime, "On Time");
+            flight = new NORMFlight(flightNumber, origin, destination, expectedTime, "Unassigned");
             
         }
 
@@ -173,16 +173,9 @@ while (true)
     }
     else if (option == "4")
     {
-        craeteFlight(Terminal5);
+        createFlight(Terminal5);
     }
-    else if (option == "5")
-    {
-        displayFlights(Terminal5);
-    }
-    else if (option == "7")
-    {
-        DisplayAirlineFlightDetails(Terminal5.Airlines);
-    }
+
 }
 
 // Basic Feature (3) Display flight
@@ -331,7 +324,18 @@ void AssignGate(Terminal terminal)
             if (UpdateStatus == "1")
             {
                 selectedFlight.Status = "Delayed";
-                Console.WriteLine($"Flight {selectedFlight.FlightNumber} has been assigned to Boarding Gate {selectedGate.GateName}!");
+                Console.WriteLine($"Flight {selectedFlight.FlightNumber} has been assigned to Boarding Gate {selectedGate.GateName} and marked as Delayed!");
+
+                // Update flightStatusDict
+                if (flightStatusDict.ContainsKey(selectedFlight.FlightNumber))
+                {
+                    flightStatusDict[selectedFlight.FlightNumber] = "Delayed";
+                }
+                else
+                {
+                    flightStatusDict.Add(selectedFlight.FlightNumber, "Delayed");
+                }
+
                 Console.WriteLine();
                 DisplayMenu();
                 break;
@@ -339,15 +343,37 @@ void AssignGate(Terminal terminal)
             else if (UpdateStatus == "2")
             {
                 selectedFlight.Status = "Boarding";
-                Console.WriteLine($"Flight {selectedFlight.FlightNumber} has been assigned to Boarding Gate {selectedGate.GateName}!");
+                Console.WriteLine($"Flight {selectedFlight.FlightNumber} has been assigned to Boarding Gate {selectedGate.GateName} and is Boarding!");
+
+                // Update flightStatusDict
+                if (flightStatusDict.ContainsKey(selectedFlight.FlightNumber))
+                {
+                    flightStatusDict[selectedFlight.FlightNumber] = "Boarding";
+                }
+                else
+                {
+                    flightStatusDict.Add(selectedFlight.FlightNumber, "Boarding");
+                }
+
                 Console.WriteLine();
                 DisplayMenu();
                 break;
             }
             else if (UpdateStatus == "3")
             {
-                selectedFlight.Status = "On Time";
-                Console.WriteLine($"Flight {selectedFlight.FlightNumber} has been assigned to Boarding Gate {selectedGate.GateName}!");
+                selectedFlight.Status = "Unassigned";
+                Console.WriteLine($"Flight {selectedFlight.FlightNumber} has been assigned to Boarding Gate {selectedGate.GateName} and is On Time!");
+
+                
+                if (flightStatusDict.ContainsKey(selectedFlight.FlightNumber))
+                {
+                    flightStatusDict[selectedFlight.FlightNumber] = "Unassigned";
+                }
+                else
+                {
+                    flightStatusDict.Add(selectedFlight.FlightNumber, "Unassigned");
+                }
+
                 Console.WriteLine();
                 DisplayMenu();
                 break;
@@ -373,83 +399,8 @@ void AssignGate(Terminal terminal)
 }
 
 
-// Display full flight details from an airline - Basic Feature (7)
-void DisplayAirlineFlightDetails(Dictionary<string, Airline> Airlines)
-{
-    Console.WriteLine("=============================================");
-    Console.WriteLine("Flight Schedule for Changi Airport Terminal 5");
-    Console.WriteLine("=============================================");
-
-
-    Console.WriteLine($"\n{"Airline Name",-20} {"Airline Code",-12}");
-    foreach (var airline in Airlines)
-    {
-        Console.WriteLine($"{airline.Value.Name,-20} {airline.Key,-12}");
-    }
-
-    Console.Write("\nEnter the 2-Letter Airline Code: ");
-    string airlineCode = Console.ReadLine().ToUpper();
-
-
-    if (Airlines.ContainsKey(airlineCode))
-    {
-        Airline selectedAirline = Airlines[airlineCode];
-        Console.WriteLine($"\nFlights for {selectedAirline.Name} ({selectedAirline.Code}):");
-
-
-        if (selectedAirline.Flights.Count > 0)
-        {
-            foreach (var flight in selectedAirline.Flights.Values)
-            {
-                Console.WriteLine($"Flight Number: {flight.FlightNumber}, Origin: {flight.Origin}, Destination: {flight.Destination}");
-            }
-
-            Console.Write("\nEnter the Flight Number: ");
-            string flightNumber = Console.ReadLine().ToUpper();
-
-            if (selectedAirline.Flights.ContainsKey(flightNumber))
-            {
-                Flight selectedFlight = selectedAirline.Flights[flightNumber];
-
-
-
-                Console.WriteLine($"Flight Details for {selectedFlight.FlightNumber}");
-
-                Console.WriteLine($"Flight Number  : {selectedFlight.FlightNumber}");
-                Console.WriteLine($"Airline Name   : {selectedAirline.Name}");
-                Console.WriteLine($"Origin         : {selectedFlight.Origin}");
-                Console.WriteLine($"Destination    : {selectedFlight.Destination}");
-                Console.WriteLine($"Expected Time  : {selectedFlight.ExpectedTime}");
-                //Console.WriteLine($"Special Request: {selectedFlight.SpecialRequest ?? "None"}");
-                if (flightGateDict.ContainsKey(selectedFlight.FlightNumber))
-                {
-                    string gateNumber = flightGateDict[selectedFlight.FlightNumber]["GateNumber"].ToString();
-                    Console.WriteLine($"Boarding Gate  : {gateNumber}");
-                }
-                else
-                {
-                    Console.WriteLine($"Boarding Gate  : Not Assigned");
-                }
-
-            }
-            else
-            {
-                Console.WriteLine("No flight found with that number.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("No flights available for this airline.");
-        }
-    }
-    else
-    {
-        Console.WriteLine("No airline found with that code.");
-    }
-}
-
 // Basic feature (6) create flights
-void craeteFlight(Terminal terminal)
+void createFlight(Terminal terminal)
 {
     bool addAnother = true;
     int flightsAdded = 0;
@@ -630,173 +581,5 @@ void craeteFlight(Terminal terminal)
 }
 
 
-// Method to modify flight details - Basic Feature (8)
-void ModifyFlightDetails(Dictionary<string, Airline> Airlines)
-{
-
-
-    Console.WriteLine("List of Available Airlines:");
-
-
-    foreach (var airline in Airlines)
-    {
-        Console.WriteLine($"{airline.Value.Name,-20} {airline.Key,-12}");
-    }
-
-
-    Console.Write("\nEnter the 2-Letter Airline Code: ");
-    string airlineCode = Console.ReadLine().ToUpper();
-
-    if (!Airlines.ContainsKey(airlineCode))
-    {
-        Console.WriteLine("No airline found with that code.");
-        return;
-    }
-
-
-    Airline selectedAirline = Airlines[airlineCode];
-    Console.WriteLine($"\nFlights for {selectedAirline.Name} ({selectedAirline.Code}):");
-
-    foreach (var flight in selectedAirline.Flights.Values)
-    {
-        Console.WriteLine($"{flight.FlightNumber,-10} {flight.Origin,-15} {flight.Destination,-15}");
-    }
-
-
-    Console.WriteLine("\nSelect an option:");
-    Console.WriteLine("[1] Modify Flight");
-    Console.WriteLine("[2] Delete Flight");
-    Console.Write("Please select your option: ");
-    string option = Console.ReadLine();
-
-    if (option == "1")
-    {
-
-
-        Console.Write("\nEnter the Flight Number you wish to modify: ");
-        string flightNumberToModify = Console.ReadLine().ToUpper();
-
-        if (!selectedAirline.Flights.ContainsKey(flightNumberToModify))
-        {
-            Console.WriteLine("No flight found with that number.");
-            return;
-        }
-
-        Flight selectedFlight = selectedAirline.Flights[flightNumberToModify];
-
-        Console.WriteLine("\nCurrent Flight Details:");
-        Console.WriteLine($"Flight Number  : {selectedFlight.FlightNumber}");
-        Console.WriteLine($"Origin         : {selectedFlight.Origin}");
-        Console.WriteLine($"Destination    : {selectedFlight.Destination}");
-        Console.WriteLine($"Expected Time  : {selectedFlight.ExpectedTime}");
-        Console.WriteLine($"Status         : {selectedFlight.Status}");
-        //Console.WriteLine($"Special Request: {selectedFlight.SpecialRequest ?? "None"}");
-        //Console.WriteLine($"Boarding Gate  : {selectedFlight.BoardingGate?.GateName ?? "None"}");
-
-        Console.WriteLine("\nSelect which flight specification to modify:");
-        Console.WriteLine("[1] Basic Information (Origin, Destination, Expected Time)");
-        Console.WriteLine("[2] Status");
-        Console.WriteLine("[3] Special Request Code");
-        Console.WriteLine("[4] Boarding Gate");
-        Console.Write("Please select your option: ");
-        string modifyOption = Console.ReadLine();
-
-        if (modifyOption == "1")
-        {
-
-            Console.Write("Enter new Origin: ");
-            selectedFlight.Origin = Console.ReadLine();
-
-            Console.Write("Enter new Destination: ");
-            selectedFlight.Destination = Console.ReadLine();
-
-            Console.Write("Enter new Expected Time (yyyy-MM-dd HH:mm): ");
-            selectedFlight.ExpectedTime = DateTime.Parse(Console.ReadLine());
-
-            Console.WriteLine("\nFlight updated successfully.");
-        }
-        else if (modifyOption == "2")
-        {
-
-            Console.Write("Enter new Status: ");
-            selectedFlight.Status = Console.ReadLine();
-
-            Console.WriteLine("\nFlight updated successfully.");
-        }
-        else if (modifyOption == "3")
-        {
-
-            Console.Write("Enter new Special Request Code: ");
-            //selectedFlight.SpecialRequest = Console.ReadLine();
-
-            Console.WriteLine("\nFlight updated successfully.");
-        }
-        else if (modifyOption == "4")
-        {
-
-            Console.Write("Enter new Boarding Gate: ");
-            string newGate = Console.ReadLine();
-
-            BoardingGate boardingGate = Terminal5.BoardingGates.Values.FirstOrDefault(gate => gate.GateName == newGate);
-            if (boardingGate != null)
-            {
-                //selectedFlight.BoardingGate = boardingGate;
-                Console.WriteLine("\nFlight updated successfully.");
-            }
-            else
-            {
-                Console.WriteLine("Boarding Gate not found.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("Invalid option selected.");
-        }
-    }
-    else if (option == "2")
-    {
-
-        Console.Write("\nEnter the Flight Number you wish to delete: ");
-        string flightNumberToDelete = Console.ReadLine().ToUpper();
-
-        if (!selectedAirline.Flights.ContainsKey(flightNumberToDelete))
-        {
-            Console.WriteLine("No flight found with that number.");
-            return;
-        }
-
-        Flight selectedFlight = selectedAirline.Flights[flightNumberToDelete];
-
-        Console.Write("Are you sure you want to delete this flight? (Y/N): ");
-        string confirmDelete = Console.ReadLine().ToUpper();
-
-        if (confirmDelete == "Y")
-        {
-            selectedAirline.Flights.Remove(flightNumberToDelete);
-            Console.WriteLine("\nFlight deleted successfully.");
-        }
-        else
-        {
-            Console.WriteLine("Deletion canceled.");
-        }
-    }
-    else
-    {
-        Console.WriteLine("Invalid option selected.");
-    }
-
-    Console.WriteLine("\nUpdated Flight Details:");
-    foreach (var flight in selectedAirline.Flights.Values)
-    {
-        Console.WriteLine($"Flight Number: {flight.FlightNumber}");
-        Console.WriteLine($"Origin: {flight.Origin}");
-        Console.WriteLine($"Destination: {flight.Destination}");
-        Console.WriteLine($"Expected Time: {flight.ExpectedTime}");
-        Console.WriteLine($"Status: {flight.Status}");
-        // Console.WriteLine($"Special Request: {flight.SpecialRequest ?? "None"}");
-        //Console.WriteLine($"Boarding Gate: {flight.BoardingGate?.GateName ?? "None"}");
-
-    }
-}
 
 
