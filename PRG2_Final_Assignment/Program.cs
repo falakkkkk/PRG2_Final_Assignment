@@ -54,7 +54,7 @@ for (int i = 1; i < csvLines1.Length; i++)
 
 
 
-// Basic Feature (2) Load flights file and add to dictionary // STATUS IS WRONG!!!
+// Basic Feature (2) Load flights file and add to dictionary
 
 
 try
@@ -179,6 +179,10 @@ while (true)
     {
         createFlight(Terminal5);
     }
+    else if (option =="7")
+    {
+        DisplayScheduledFlights(Terminal5);
+    }
     else
     {
         Console.WriteLine("Please enter a vaild option.");
@@ -192,7 +196,7 @@ while (true)
 void displayFlights(Terminal terminal)
 {
     string csvFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\flights.csv");
-    ;
+    
     if (!File.Exists(csvFilePath))
     {
         Console.WriteLine("Error: The flights CSV file does not exist.");
@@ -236,7 +240,6 @@ void displayFlights(Terminal terminal)
         Console.WriteLine($"Error: Failed to read from '{csvFilePath}'. {ex.Message}");
     }
 }
-
 
 // List all boarding gates method - Basic  Feature (4)
 void DisplayBoardingGates()
@@ -864,5 +867,68 @@ void ModifyOrDeleteFlight(Dictionary<string, Airline> Airlines, Dictionary<strin
 
 //Basic feature (9) filter by earlist flight to latest flight
 
+void DisplayScheduledFlights(Terminal terminal)
+{
+    Console.WriteLine("=============================================");
+    Console.WriteLine("Scheduled Flights for Today");
+    Console.WriteLine("=============================================\n");
+
+    DateTime today = DateTime.Today;
+    List<Flight> allFlights = new List<Flight>();
+
+    foreach (var airline in terminal.Airlines.Values)
+    {
+        foreach (var flight in airline.Flights.Values)
+        {
+            if (flight.ExpectedTime.Date == today)
+            {
+                allFlights.Add(flight);
+            }
+        }
+    }
+
+    if (allFlights.Count == 0)
+    {
+        Console.WriteLine("No scheduled flights for today.\n");
+        return;
+    }
+
+    // ✅ Use IComparer<Flight> inside Sort() without a separate class
+    allFlights.Sort(new Comparison<Flight>((x, y) => x.ExpectedTime.CompareTo(y.ExpectedTime)));
+    Console.WriteLine($"{"Flight Number",-15} {"Airline",-20} {"Origin",-20} {"Destination",-20} {"Expected Time",-25} {"Status",-15} {"Special Request",-20} {"Boarding Gate",-20}");
+    Console.WriteLine(new string('-', 155));
+    // Display sorted flights
+    foreach (var flight in allFlights)
+    {
+        string specialRequestCode = "None"; // Default
+        if (flight is DDJBFlight) specialRequestCode = "DDJB";
+        else if (flight is LWTTFlight) specialRequestCode = "LWTT";
+        else if (flight is CFFTFlight) specialRequestCode = "CFFT";
+
+        // Get Boarding Gate from Dictionary
+        string boardingGate = "Not Assigned"; // Default
+        if (flightGateDict.ContainsKey(flight.FlightNumber) && flightGateDict[flight.FlightNumber].ContainsKey("Gate"))
+        {
+            boardingGate = flightGateDict[flight.FlightNumber]["Gate"].ToString();
+        }
+        string airlineName = "Unknown Airline"; // Default if not found
+        string[] flightParts = flight.FlightNumber.Split(' '); // Extract airline code
+        if (flightParts.Length > 0 && terminal.Airlines.ContainsKey(flightParts[0]))
+        {
+            airlineName = terminal.Airlines[flightParts[0]].Name;
+        }
+
+        //Console.WriteLine($"Flight Number: {flight.FlightNumber} | Airline: {airlineName} | " +
+        //                  $"From: {flight.Origin} -> {flight.Destination} | " +
+        //                  $"Departure: {flight.ExpectedTime:dd/MM/yyyy HH:mm} | Status: {flight.Status} | " +
+        //                  $"Special Request: {specialRequestCode} | Boarding Gate: {boardingGate}");   
+
+        //Console.WriteLine($"{"Flight Number",-15} {"Airline",-20} {"Origin",-20} {"Destination",-20} {"Expected Time",-20} {"Status",-20} {"Special Request",-15} {"Boarding Gate",-20}");
+        //Console.WriteLine(new string('-', 120));
+        Console.WriteLine($"{flight.FlightNumber,-15} {airlineName,-20} {flight.Origin,-20} {flight.Destination,-20} {flight.ExpectedTime,-25} {flight.Status,-15} {specialRequestCode,-20} {boardingGate,-20}");
+    }
+
+    Console.WriteLine("\n=============================================");
+}
 
 
