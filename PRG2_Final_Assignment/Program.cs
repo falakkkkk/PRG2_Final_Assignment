@@ -161,7 +161,11 @@ while (true)
     Console.Write("Please select your option: ");
     string option = Console.ReadLine();
 
-    if (option == "2")
+    if (option == "1")
+    {
+        displayFlights(Terminal5);
+    }
+    else if (option == "2")
     {
         Console.WriteLine("=============================================\r\nList of Boarding Gates for Changi Airport Terminal 5\r\n=============================================");
         DisplayBoardingGates();
@@ -175,28 +179,37 @@ while (true)
     {
         createFlight(Terminal5);
     }
-
+    else
+    {
+        Console.WriteLine("Please enter a vaild option.");
+    }
 }
+
+
+
 
 // Basic Feature (3) Display flight
 void displayFlights(Terminal terminal)
 {
-    string csvFilePath = "flights.csv";
+    string csvFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\flights.csv");
+    ;
     if (!File.Exists(csvFilePath))
     {
         Console.WriteLine("Error: The flights CSV file does not exist.");
         return;
     }
+
     Console.WriteLine();
-    Console.WriteLine($"{"Flight Number",-15} {"Origin",-20} {"Destination",-20} {"Expected Time",-15} {"Special Request",-15}");
-    Console.WriteLine(new string('-', 85));
+    Console.WriteLine($"{"Flight Number",-15} {"Origin",-20} {"Destination",-20} {"Expected Time",-20} {"Special Request",-15}");
+    Console.WriteLine(new string('-', 100));
     try
     {
         string[] lines = File.ReadAllLines(csvFilePath);
-        foreach (string line in lines)
+        for (int i = 1; i < lines.Length; i++)
         {
+            string line = lines[i];
             string[] parts = line.Split(',');
-            if (parts.Length >= 4) // Ensure the line has at least FlightNumber, Origin, Destination, ExpectedTime
+            if (parts.Length >= 4)
             {
                 string flightNumber = parts[0];
                 string origin = parts[1];
@@ -204,7 +217,17 @@ void displayFlights(Terminal terminal)
                 string expectedTime = parts[3];
                 string specialRequest = parts.Length > 4 ? parts[4] : "None";
 
-                Console.WriteLine($"{flightNumber,-15} {origin,-20} {destination,-20} {expectedTime,-15} {specialRequest,-15}");
+   
+                if (DateTime.TryParse(expectedTime, out DateTime parsedTime))
+                {
+                    expectedTime = parsedTime.ToString("dd/MM/yyyy HH:mm"); 
+                }
+                else
+                {
+                    expectedTime = "Invalid Time";
+                }
+
+                Console.WriteLine($"{flightNumber,-15} {origin,-20} {destination,-20} {expectedTime,-20} {specialRequest,-15}");
             }
         }
     }
@@ -212,26 +235,6 @@ void displayFlights(Terminal terminal)
     {
         Console.WriteLine($"Error: Failed to read from '{csvFilePath}'. {ex.Message}");
     }
-
-
-    //Console.WriteLine();
-    //Console.WriteLine($"{"Flight Number",-15} {"Airline Name",-25} {"Origin",-20} {"Destination",-20} {"Expected Time",-15}");
-    //Console.WriteLine(new string('-', 110));
-
-    //foreach (var airline in terminal.Airlines.Values)
-    //{
-
-    //    foreach (var flight in airline.Flights.Values)
-    //    {
-    //        string flightNumber = flight.FlightNumber;
-    //        string airlineName = airline.Name;
-    //        string origin = flight.Origin;
-    //        string destination = flight.Destination;
-    //        string time = flight.ExpectedTime.ToString("h:mm tt");
-
-    //        Console.WriteLine($"{flightNumber,-15} {airlineName,-25} {flight.Origin,-20} {flight.Destination,-20} {time,-15}");
-    //    }
-    //}
 }
 
 
@@ -431,21 +434,27 @@ void AssignGate(Terminal terminal)
     }
 }
 
-
-
-// Basic feature (6) create flights
+//Basic feature (6) create flights.
 void createFlight(Terminal terminal)
 {
-
     bool addAnother = true;
     int flightsAdded = 0;
-    string csvFilePath = "flights.csv";
+    string csvFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\flights.csv");
+
+
+    // Ensure the CSV file exists and has a header if it's empty or new
+    if (!File.Exists(csvFilePath))
+    {
+        File.WriteAllText(csvFilePath, "Flight Number,Origin,Destination,Expected Departure/Arrival,Special Request Code\n");
+    }
 
     while (addAnother)
     {
         Console.WriteLine("=============================================");
         Console.WriteLine("Create a New Flight");
         Console.WriteLine("=============================================\n");
+
+        // 1. Prompt for Flight Number
         string flightNum;
         Airline inputAirline = null;
         while (true)
@@ -454,8 +463,8 @@ void createFlight(Terminal terminal)
             flightNum = Console.ReadLine().Trim().ToUpper();
 
             string[] flightParts = flightNum.Split(' ');
- 
             string airlineCode = flightParts[0];
+
             if (!terminal.Airlines.ContainsKey(airlineCode))
             {
                 Console.WriteLine($"Error: Airline code '{airlineCode}' does not exist.\n");
@@ -470,9 +479,10 @@ void createFlight(Terminal terminal)
                 continue;
             }
 
-            break; 
+            break;
         }
 
+        // 2. Prompt for Origin
         string origin;
         while (true)
         {
@@ -486,6 +496,7 @@ void createFlight(Terminal terminal)
             break;
         }
 
+        // 3. Prompt for Destination
         string destination;
         while (true)
         {
@@ -500,11 +511,20 @@ void createFlight(Terminal terminal)
         }
 
         // 4. Prompt for Expected Departure/Arrival Time
-        Console.Write("Enter Expected Departure/Arrival Time (dd/MM/yyyy hh:mm): ");
-        DateTime expectedTime = Convert.ToDateTime(Console.ReadLine());
+        DateTime expectedTime;
+        while (true)
+        {
+            Console.Write("Enter Expected Departure/Arrival Time (dd/MM/yyyy hh:mm): ");
+            string timeInput = Console.ReadLine().Trim();
+            if (!DateTime.TryParseExact(timeInput, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out expectedTime))
+            {
+                Console.WriteLine("Error: Invalid date/time format. Please use 'dd/MM/yyyy hh:mm'.\n");
+                continue;
+            }
+            break;
+        }
 
-
-        // 5. Prompt for Additional Information (Special Request Code)
+        // 5. Prompt for Special Request Code
         string specialRequestCode = null;
         while (true)
         {
@@ -527,29 +547,23 @@ void createFlight(Terminal terminal)
             }
         }
 
-
-
-    // 6. Create the Appropriate Flight Object
+        // 6. Create the Appropriate Flight Object
         Flight flight;
         if (specialRequestCode == "DDJB")
         {
             flight = new DDJBFlight(flightNum, origin, destination, expectedTime, "Unassigned", 300);
-
         }
         else if (specialRequestCode == "LWTT")
         {
             flight = new LWTTFlight(flightNum, origin, destination, expectedTime, "Unassigned", 500);
-
         }
         else if (specialRequestCode == "CFFT")
         {
             flight = new CFFTFlight(flightNum, origin, destination, expectedTime, "Unassigned", 150);
-
         }
         else
         {
             flight = new NORMFlight(flightNum, origin, destination, expectedTime, "Unassigned");
-
         }
 
         // 7. Add the Flight Object to the Airline's Dictionary
@@ -565,35 +579,22 @@ void createFlight(Terminal terminal)
             Console.WriteLine($"[Warning] Flight number '{flightNum}' already exists in flightStatusDict. Skipping addition.");
         }
 
-        // 8. Append the New Flight Information to flights.csv
+        // 8. Append the New Flight Information to flights.csv using StreamWriter
         try
         {
-            // Prepare CSV line
-            // Format: FlightNumber,Origin,Destination,ExpectedTime,SpecialRequest
-            //string csvLine = $"{flight.FlightNumber},{flight.Origin},{flight.Destination},{flight.ExpectedTime.ToString("yyyy-MM-dd HH:mm")}";
-            //if (specialRequestCode != null)
-            //{
-            //    csvLine += $",{specialRequestCode}";
-            //}
-            string csvLine = $"{flight.FlightNumber},{flight.Origin},{flight.Destination},{flight.ExpectedTime.ToString("yyyy-MM-dd HH:mm")}";
-            if (specialRequestCode != null)
+            string csvLine = $"{flight.FlightNumber},{flight.Origin},{flight.Destination},{flight.ExpectedTime:dd/MM/yyyy HH:mm},{specialRequestCode ?? "None"}";
+
+            // Use StreamWriter to append the flight data to the CSV file
+            using (StreamWriter sw = new StreamWriter(csvFilePath, true))
             {
-                csvLine += $",{specialRequestCode}";
+                sw.WriteLine(csvLine);
             }
-            // Append the line to the CSV file using File.AppendAllText
-            //File.AppendAllText("flights.csv", csvLine + Environment.NewLine);
-
-            //    Console.WriteLine("[Info] Flight information successfully written to 'flights.csv'.\n");
-            //}
-
-            File.AppendAllText(csvFilePath, csvLine + Environment.NewLine);
 
             Console.WriteLine($"[Info] Flight information successfully written to '{csvFilePath}'.\n");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: Failed to write to 'flights.csv'. {ex.Message}\n");
-            // Optionally, remove the flight from the dictionary if CSV write fails
             inputAirline.Flights.Remove(flightNum);
             continue;
         }
@@ -609,18 +610,18 @@ void createFlight(Terminal terminal)
 
             if (response == "Y")
             {
-                Console.WriteLine(); // Add a blank line for readability
-                break; // Continue the outer loop to add another flight
+                Console.WriteLine();
+                break;
             }
             else if (response == "N")
             {
                 addAnother = false;
-                break; // Exit the outer loop
+                break;
             }
             else
             {
                 Console.WriteLine("Error: Please enter a valid response (Y/N).\n");
-                continue; // Prompt again
+                continue;
             }
         }
     }
@@ -861,6 +862,7 @@ void ModifyOrDeleteFlight(Dictionary<string, Airline> Airlines, Dictionary<strin
     }
 }
 
+//Basic feature (9) filter by earlist flight to latest flight
 
 
 
