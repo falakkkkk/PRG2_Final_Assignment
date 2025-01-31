@@ -160,7 +160,11 @@ while (true)
     }
     else if (option =="7")
     {
-        DisplayScheduledFlights(Terminal5);
+        DisplayAirlineFlightDetails(Terminal5.Airlines, flightGateDict);
+    }
+    else if (option == "8")
+    {
+        ModifyOrDeleteFlight(Terminal5.Airlines, flightGateDict);
     }
     else if (option == "0")
     {
