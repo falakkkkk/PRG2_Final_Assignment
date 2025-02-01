@@ -51,10 +51,11 @@ namespace PRG2_Final_Assignment
             {
                 totalFee += flight.CalculateFees(flight.Origin, flight.Destination);
 
-                if (flight.ExpectedTime.Hour < 11 || flight.ExpectedTime.Hour > 21)
+                if (flight.ExpectedTime.Hour < 11 || flight.ExpectedTime.Hour >= 21)
                 {
                     discount += 110;
                 }
+
 
                 if (flight.Origin == "Dubai (DXB)" || flight.Origin == "Bangkok (BKK)" || flight.Origin == "Tokyo (NRT)")
                 {
