@@ -175,6 +175,10 @@ while (true)
     {
         ProcessUnassignedFlightsBulk(Terminal5);
     }
+    else if (option == "9")
+    {
+        
+    }
     else if (option == "0")
     {
         Console.WriteLine("Good Bye.");
@@ -1235,7 +1239,7 @@ void ProcessUnassignedFlightsBulk(Terminal terminal)
 
 
 //Advanced Feature - (2)
-string DisplayTotalFeesPerAirline(Terminal terminal, Dictionary<string, Dictionary<string, object>> flightGateDict)
+void DisplayTotalFeesPerAirline(Terminal terminal, Dictionary<string, Dictionary<string, object>> flightGateDict)
 {
 
     List<string> unassignedFlights = new List<string>();
@@ -1298,5 +1302,7 @@ string DisplayTotalFeesPerAirline(Terminal terminal, Dictionary<string, Dictiona
     Console.WriteLine($"Discount Percentage: {discountPercentage:0.00}%");
 }
 
-DisplayTotalFeesPerAirline(Terminal5,
+
+DisplayTotalFeesPerAirline(Terminal5, flightGateDict);
+
 
