@@ -131,7 +131,7 @@ Dictionary<string, string> flightStatusDict = new Dictionary<string, string>();
 
 void DisplayMenu()
 {
-    Console.WriteLine("=============================================\r\nWelcome to Changi Airport Terminal 5\r\n=============================================\r\n1. List All Flights\r\n2. List Boarding Gates\r\n3. Assign a Boarding Gate to a Flight\r\n4. Create Flight\r\n5. Display Airline Flights\r\n6. Modify Flight Details\r\n7. Display Flight Schedule\r\n0. Exit");
+    Console.WriteLine("=============================================\r\nWelcome to Changi Airport Terminal 5\r\n=============================================\r\n1. List All Flights\r\n2. List Boarding Gates\r\n3. Assign a Boarding Gate to a Flight\r\n4. Create Flight\r\n5. Display Airline Flights\r\n6. Modify Flight Details\r\n7. Display Flight Schedule\r\n7. Assign Boarding Gate Automatically To Remaining Flights\r\n0. Exit");
 }
 
 while (true)
@@ -171,14 +171,14 @@ while (true)
     {
         DisplayScheduledFlights(Terminal5.Airlines, flightGateDict);
     }
+    else if (option == "8")
+    {
+        ProcessUnassignedFlightsBulk(Terminal5);
+    }
     else if (option == "0")
     {
         Console.WriteLine("Good Bye.");
         break;
-    }
-    else if (option== "a")
-    {
-        ProcessUnassignedFlightsBulk(Terminal5);
     }
     else
     {
@@ -1086,14 +1086,13 @@ void DisplayScheduledFlights(Dictionary<string, Airline> Airlines, Dictionary<st
 }
 
 
-// Advanced Feature: Bulk Process Unassigned Flights to Boarding Gates
-// Advanced Feature: Bulk Process Unassigned Flights to Boarding Gates
+
 void ProcessUnassignedFlightsBulk(Terminal terminal)
 {
-    // Queue to hold all flights that are not yet assigned a boarding gate
+
     Queue<Flight> unassignedFlights = new Queue<Flight>();
 
-    // Count unassigned flights by checking our flightGateDict for each flight
+
     int totalUnassignedFlights = 0;
     foreach (var airline in terminal.Airlines.Values)
     {
@@ -1108,7 +1107,6 @@ void ProcessUnassignedFlightsBulk(Terminal terminal)
     }
     Console.WriteLine($"Total number of Flights without Boarding Gate assignment: {totalUnassignedFlights}");
 
-    // Count unassigned boarding gates by checking if the gate's Flight property is null
     int totalUnassignedGates = 0;
     foreach (var gate in terminal.BoardingGates.Values)
     {
@@ -1119,23 +1117,23 @@ void ProcessUnassignedFlightsBulk(Terminal terminal)
     }
     Console.WriteLine($"Total number of Boarding Gates without a Flight assigned: {totalUnassignedGates}");
 
-    // Counters for automatic assignments (those we process in bulk)
+
     int autoFlightAssignments = 0;
     int autoGateAssignments = 0;
 
-    // Process each flight from the queue
+
     while (unassignedFlights.Count > 0)
     {
         Flight flight = unassignedFlights.Dequeue();
         string specialRequest = GetSpecialRequestCode(flight);
         BoardingGate assignedGate = null;
 
-        // If the flight has a special request, search for a gate that supports it
+
         if (!string.IsNullOrEmpty(specialRequest) && specialRequest != "None")
         {
             foreach (var gate in terminal.BoardingGates.Values)
             {
-                if (gate.Flight == null) // only consider unassigned gates
+                if (gate.Flight == null) 
                 {
                     if ((specialRequest == "DDJB" && gate.SupportsDDJB) ||
                         (specialRequest == "CFFT" && gate.SupportsCFFT) ||
@@ -1149,8 +1147,7 @@ void ProcessUnassignedFlightsBulk(Terminal terminal)
         }
         else
         {
-            // If no special request, search for an unassigned gate that is "normal"
-            // (i.e. a gate that does not support any special requests)
+
             foreach (var gate in terminal.BoardingGates.Values)
             {
                 if (gate.Flight == null && !gate.SupportsDDJB && !gate.SupportsCFFT && !gate.SupportsLWTT)
@@ -1159,7 +1156,6 @@ void ProcessUnassignedFlightsBulk(Terminal terminal)
                     break;
                 }
             }
-            // If no "normal" gate is available, assign any available gate
             if (assignedGate == null)
             {
                 foreach (var gate in terminal.BoardingGates.Values)
@@ -1173,7 +1169,6 @@ void ProcessUnassignedFlightsBulk(Terminal terminal)
             }
         }
 
-        // If an appropriate gate was found, assign the flight to the gate
         if (assignedGate != null)
         {
             assignedGate.Flight = flight;
@@ -1187,7 +1182,7 @@ void ProcessUnassignedFlightsBulk(Terminal terminal)
             autoFlightAssignments++;
             autoGateAssignments++;
 
-            // Retrieve airline name based on the flight number prefix
+
             string airlineName = "Unknown Airline";
             string[] flightParts = flight.FlightNumber.Split(' ');
             if (flightParts.Length > 0 && terminal.Airlines.ContainsKey(flightParts[0]))
@@ -1195,13 +1190,12 @@ void ProcessUnassignedFlightsBulk(Terminal terminal)
                 airlineName = terminal.Airlines[flightParts[0]].Name;
             }
 
-            // Display the flight details with basic information
             Console.WriteLine("\nAssigned Flight Details:");
             Console.WriteLine($"Flight Number       : {flight.FlightNumber}");
             Console.WriteLine($"Airline Name        : {airlineName}");
             Console.WriteLine($"Origin              : {flight.Origin}");
             Console.WriteLine($"Destination         : {flight.Destination}");
-            Console.WriteLine($"Expected Departure/Arrival Time : {flight.ExpectedTime}");
+            Console.WriteLine($"Expected Time       : {flight.ExpectedTime}");
             Console.WriteLine($"Special Request Code: {specialRequest}");
             Console.WriteLine($"Assigned Boarding Gate: {assignedGate.GateName}");
             Console.WriteLine("---------------------------------------------");
@@ -1216,7 +1210,6 @@ void ProcessUnassignedFlightsBulk(Terminal terminal)
     Console.WriteLine($"Total Flights Assigned Automatically: {autoFlightAssignments}");
     Console.WriteLine($"Total Boarding Gates Assigned Automatically: {autoGateAssignments}");
 
-    // Calculate percentages based on the current flightGateDict count.
     int totalAssigned = flightGateDict.Count;
     double flightAutoPercentage = totalAssigned > 0 ? ((double)autoFlightAssignments / totalAssigned) * 100 : 0;
     double gateAutoPercentage = totalAssigned > 0 ? ((double)autoGateAssignments / totalAssigned) * 100 : 0;

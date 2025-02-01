@@ -29,10 +29,4 @@ JL 900,Tokyo (NRT),Singapore (SIN),10:20 AM,
 CX 329,Singapore (SIN),Hong Kong (HKD),12:50 PM,DDJB
 QF 897,Singapore (SIN),Sydney (SYD),1:40 PM,
 TR 786,Bangkok (BKK),Singapore (SIN),2:55 PM,
-SQ 45235,EWTV,WYT,01/01/2001 11:11,DDJB
-SQ 123,Rat islands with ducks,duck islands with rats,11/11/2011 11:11,CFFT
-SQ 145,HELLO,BYE,11/11/2066 22:22,None
-TR 987,blah,blah,02/02/2025 12:34,None
-SQ,654,hhh,01/12/2025 12:12,CFFT
-SQ 111,111,111,22/02/2026 22:11,LWTT
-SQ 222,222,222,22/02/2025 00:00,DDJB
+
