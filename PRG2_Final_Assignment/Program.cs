@@ -200,7 +200,7 @@ while (true)
     {
 
         DisplayTotalFeesPerDay(Terminal5, flightGateDict);
-
+          
     }
     else if (option == "0")
     {
