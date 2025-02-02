@@ -147,7 +147,11 @@ Dictionary<string, string> flightStatusDict = new Dictionary<string, string>();
 
 void DisplayMenu()
 {
+    Console.ForegroundColor = ConsoleColor.Blue;
+
     Console.WriteLine("\n=============================================\r\nWelcome to Changi Airport Terminal 5\r\n=============================================\r\n1. List All Flights\r\n2. List Boarding Gates\r\n3. Assign a Boarding Gate to a Flight\r\n4. Create Flight\r\n5. Display Airline Flights\r\n6. Modify Flight Details\r\n7. Display Flight Schedule\r\n8. Assign Boarding Gate Automatically To Remaining Flights\r\n9. Display the total fee per airline for the day\r\n0. Exit");
+
+    Console.ResetColor();
 }
 
 // Main Menu and Feature Options
