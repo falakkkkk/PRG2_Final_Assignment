@@ -1231,7 +1231,7 @@ void ProcessUnassignedFlightsBulk(Terminal terminal)
         {
             foreach (var gate in terminal.BoardingGates.Values)
             {
-                if (gate.Flight == null) 
+                if (gate.Flight == null)
                 {
                     if ((specialRequest == "DDJB" && gate.SupportsDDJB) ||
                         (specialRequest == "CFFT" && gate.SupportsCFFT) ||
@@ -1315,7 +1315,6 @@ void ProcessUnassignedFlightsBulk(Terminal terminal)
     Console.WriteLine($"Percentage of Flights Processed Automatically: {flightAutoPercentage:F2}%");
     Console.WriteLine($"Percentage of Boarding Gates Processed Automatically: {gateAutoPercentage:F2}%");
 }
-
 
 
 // Advanced Feature (2) - Display the total fee per airline for the day 
